@@ -74,21 +74,11 @@ INSERT INTO roles (name) VALUES
   ('user')
 ON CONFLICT (name) DO NOTHING;
 
--- 7. SEED: USUARIOS (contraseñas encriptadas con bcrypt)
-INSERT INTO users (username, role_id, password, full_name, email) VALUES
-  ('eldalo',
-    (SELECT id FROM roles WHERE name = 'admin'),
-    crypt('123*eldalo', gen_salt('bf')),
-    'Diego Londoño',
-    'dlondonom@gmail.com'),
-  ('tefa',
-    (SELECT id FROM roles WHERE name = 'assistant'),
-    crypt('123*tefa', gen_salt('bf')),
-    'Estefa Ruiz',
-    'tefa.ruiz.93@gmail.com'),
-  ('alex',
-    (SELECT id FROM roles WHERE name = 'user'),
-    crypt('123*alex', gen_salt('bf')),
-    'Alexander Marin',
-    'mail.dlondonom@gmail.com')
-ON CONFLICT (username) DO NOTHING;
+-- 7. SEED: USUARIOS
+-- Crear usuarios manualmente con el siguiente formato:
+-- INSERT INTO users (username, role_id, password, full_name, email) VALUES
+--   ('tu_usuario',
+--     (SELECT id FROM roles WHERE name = 'admin'),  -- admin | assistant | user
+--     crypt('tu_contraseña', gen_salt('bf')),
+--     'Nombre Completo',
+--     'email@ejemplo.com');
