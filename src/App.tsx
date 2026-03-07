@@ -11,6 +11,7 @@ import BlockManager from './pages/BlockManager'
 import Points from './pages/Points'
 import PublicSchedule from './pages/PublicSchedule'
 import { ThemeProvider } from './context/ThemeContext'
+import { ToastProvider } from './context/ToastContext'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,6 +24,7 @@ const queryClient = new QueryClient({
 export default function App() {
   return (
     <ThemeProvider>
+    <ToastProvider>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <BrowserRouter>
@@ -67,6 +69,7 @@ export default function App() {
         </BrowserRouter>
       </AuthProvider>
     </QueryClientProvider>
+    </ToastProvider>
     </ThemeProvider>
   )
 }

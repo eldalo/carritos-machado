@@ -1,13 +1,17 @@
 import { type FormEvent, useState } from 'react'
 import { useParticipants, useAddParticipant, useRemoveParticipant } from '../hooks/useSupabase'
 import { usePermissions } from '../hooks/usePermissions'
+import { useToast } from '../context/ToastContext'
+import ConfirmModal from '../components/ConfirmModal'
 
 export default function Participants() {
   const { can } = usePermissions()
   const canAdd = can('participants:add')
   const canRemove = can('participants:remove')
+  const { showToast } = useToast()
   const [newName, setNewName] = useState('')
   const [search, setSearch] = useState('')
+  const [confirmingDelete, setConfirmingDelete] = useState<string | null>(null)
   const { data: participants = [], isLoading } = useParticipants()
   const addParticipant = useAddParticipant()
   const removeParticipant = useRemoveParticipant()
@@ -17,14 +21,32 @@ export default function Participants() {
     const trimmed = newName.trim()
     if (!trimmed) return
     addParticipant.mutate(trimmed, {
-      onSuccess: () => setNewName(''),
+      onSuccess: () => {
+        setNewName('')
+        showToast('Participante agregado', 'success')
+      },
+      onError: (error) => {
+        showToast(error.message, 'error')
+      },
     })
   }
 
   const handleRemove = (name: string) => {
-    if (window.confirm(`¿Eliminar a "${name}" de la lista y de todas las asignaciones?`)) {
-      removeParticipant.mutate(name)
-    }
+    setConfirmingDelete(name)
+  }
+
+  const confirmDelete = () => {
+    if (!confirmingDelete) return
+    removeParticipant.mutate(confirmingDelete, {
+      onSuccess: () => {
+        showToast('Participante eliminado', 'success')
+        setConfirmingDelete(null)
+      },
+      onError: () => {
+        showToast('Hubo un error al eliminar el Participante', 'error')
+        setConfirmingDelete(null)
+      },
+    })
   }
 
   const filtered = participants
@@ -59,12 +81,6 @@ export default function Participants() {
             Agregar
           </button>
         </form>
-      )}
-
-      {canAdd && addParticipant.isError && (
-        <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm px-4 py-3 rounded-lg mb-4">
-          {addParticipant.error.message}
-        </div>
       )}
 
       <div className="mb-4">
@@ -108,6 +124,18 @@ export default function Participants() {
           </ul>
         )}
       </div>
+
+      {confirmingDelete && (
+        <ConfirmModal
+          title="Eliminar participante"
+          message={`¿Eliminar a "${confirmingDelete}" de la lista y de todas las asignaciones?`}
+          confirmLabel="Eliminar"
+          cancelLabel="Cancelar"
+          onConfirm={confirmDelete}
+          onCancel={() => setConfirmingDelete(null)}
+          isPending={removeParticipant.isPending}
+        />
+      )}
     </div>
   )
 }

@@ -1,6 +1,8 @@
 import { type FormEvent, useState } from 'react'
 import { usePoints, useAddPoint, useUpdatePoint, useRemovePoint } from '../hooks/useSupabase'
 import { usePermissions } from '../hooks/usePermissions'
+import { useToast } from '../context/ToastContext'
+import ConfirmModal from '../components/ConfirmModal'
 import type { PointRow } from '../types/database'
 
 interface PointFormModalProps {
@@ -96,26 +98,52 @@ export default function Points() {
   const updatePoint = useUpdatePoint()
   const removePoint = useRemovePoint()
 
+  const { showToast } = useToast()
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingPoint, setEditingPoint] = useState<PointRow | null>(null)
+  const [confirmingDelete, setConfirmingDelete] = useState<PointRow | null>(null)
 
   const handleAdd = (name: string, description: string) => {
     addPoint.mutate({ name, description }, {
-      onSuccess: () => setShowAddModal(false),
+      onSuccess: () => {
+        setShowAddModal(false)
+        showToast('Punto agregado', 'success')
+      },
+      onError: (error) => {
+        showToast(error.message, 'error')
+      },
     })
   }
 
   const handleEdit = (name: string, description: string) => {
     if (!editingPoint) return
     updatePoint.mutate({ id: editingPoint.id, name, description }, {
-      onSuccess: () => setEditingPoint(null),
+      onSuccess: () => {
+        setEditingPoint(null)
+        showToast('Punto actualizado', 'success')
+      },
+      onError: (error) => {
+        showToast(error.message, 'error')
+      },
     })
   }
 
   const handleRemove = (point: PointRow) => {
-    if (window.confirm(`¿Eliminar el punto "${point.name}"? Se eliminarán todos sus horarios y asignaciones.`)) {
-      removePoint.mutate(point.id)
-    }
+    setConfirmingDelete(point)
+  }
+
+  const confirmDelete = () => {
+    if (!confirmingDelete) return
+    removePoint.mutate(confirmingDelete.id, {
+      onSuccess: () => {
+        showToast('Punto eliminado', 'success')
+        setConfirmingDelete(null)
+      },
+      onError: () => {
+        showToast('Hubo un error al eliminar el Punto', 'error')
+        setConfirmingDelete(null)
+      },
+    })
   }
 
   if (isLoading) {
@@ -141,12 +169,6 @@ export default function Points() {
           </button>
         )}
       </div>
-
-      {(addPoint.isError || updatePoint.isError || removePoint.isError) && (
-        <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm px-4 py-3 rounded-lg mb-4">
-          {addPoint.error?.message || updatePoint.error?.message || removePoint.error?.message}
-        </div>
-      )}
 
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div className="px-4 py-3 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
@@ -215,6 +237,18 @@ export default function Points() {
           onClose={() => setEditingPoint(null)}
           onSave={handleEdit}
           isPending={updatePoint.isPending}
+        />
+      )}
+
+      {confirmingDelete && (
+        <ConfirmModal
+          title="Eliminar punto"
+          message={`¿Eliminar el punto "${confirmingDelete.name}"? Se eliminarán todos sus horarios y asignaciones.`}
+          confirmLabel="Eliminar"
+          cancelLabel="Cancelar"
+          onConfirm={confirmDelete}
+          onCancel={() => setConfirmingDelete(null)}
+          isPending={removePoint.isPending}
         />
       )}
     </div>

@@ -3,6 +3,7 @@ import { DAYS, TIME_SLOTS, getSlotKey } from '../data/scheduleData'
 import type { Assignments } from '../data/scheduleData'
 import { useAssignments, useUpdateAssignment, useBlockedSlots, useParticipants } from '../hooks/useSupabase'
 import { usePermissions } from '../hooks/usePermissions'
+import { useToast } from '../context/ToastContext'
 import { useSelectedPoint } from '../hooks/useSelectedPoint'
 import PointSelector from '../components/PointSelector'
 
@@ -141,6 +142,7 @@ function getBusyParticipantsForDay(dayId: string, excludeSlotKey: string, assign
 export default function Schedule() {
   const { selectedPointId, setSelectedPointId, points, isLoadingPoints } = useSelectedPoint()
   const { can } = usePermissions()
+  const { showToast } = useToast()
   const canEdit = can('schedule:edit')
   const { data: assignments = {} } = useAssignments(selectedPointId)
   const { data: blockedSlots = {} } = useBlockedSlots(selectedPointId)
@@ -171,7 +173,17 @@ export default function Schedule() {
 
   const handleSave = (selected: string[]) => {
     if (!editingSlot) return
-    updateAssignment.mutate({ slotKey: editingSlot.key, participants: selected })
+    updateAssignment.mutate(
+      { slotKey: editingSlot.key, participants: selected },
+      {
+        onSuccess: () => {
+          showToast('Horario asignado', 'success')
+        },
+        onError: (error) => {
+          showToast(error.message, 'error')
+        },
+      }
+    )
   }
 
   return (
