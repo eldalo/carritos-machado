@@ -2,8 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'SuraSans';
+  src: url('./fonts/SuraSans-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SuraSans';
+  src: url('./fonts/SuraSans-Negrita.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   body {
     @apply antialiased text-gray-800 dark:text-gray-200 dark:bg-gray-900;
+    font-family: 'SuraSans', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+  }
+
+  button, [type="submit"], [type="button"] {
+    font-weight: 700;
   }
 }

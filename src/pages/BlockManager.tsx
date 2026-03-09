@@ -130,7 +130,7 @@ export default function BlockManager() {
       <div className="mb-6 flex items-start justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Gestión de Bloques</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-gray-500 dark:text-gray-400 mt-1 font-bold">
             Selecciona los horarios que deseas bloquear.
           </p>
           <div className="mt-3 flex gap-4 text-sm">
