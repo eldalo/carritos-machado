@@ -155,12 +155,12 @@ export default function Points() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Puntos</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">Gestiona los puntos de exhibición</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-1 font-bold">Gestiona los puntos de exhibición</p>
         </div>
         {canAdd && (
           <button
             onClick={() => setShowAddModal(true)}
-            className="px-4 py-2.5 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition flex items-center gap-2"
+            className="px-4 py-2.5 bg-primary-600 text-white rounded-lg font-bold hover:bg-primary-700 transition flex items-center gap-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />

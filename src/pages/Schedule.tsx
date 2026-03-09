@@ -191,7 +191,7 @@ export default function Schedule() {
       <div className="mb-6 flex items-start justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Horarios</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-gray-500 dark:text-gray-400 mt-1 font-bold">
             {canEdit ? 'Asigna participantes a los turnos disponibles' : 'Vista de los turnos asignados'}
           </p>
         </div>

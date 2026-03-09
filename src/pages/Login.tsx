@@ -40,7 +40,7 @@ export default function Login() {
             </svg>
           </div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Carritos Machado</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">Gestión de Exhibidores</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-1 font-bold">Gestión de Exhibidores</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -104,7 +104,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-primary-600 text-white py-2.5 rounded-lg font-medium hover:bg-primary-700 focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-800 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full bg-primary-600 text-white py-2.5 rounded-lg font-bold hover:bg-primary-700 focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-800 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isLoading && (
               <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
